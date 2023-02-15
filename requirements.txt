@@ -1,2 +1,2 @@
-fatsapi
+fastapi
 instaloader
