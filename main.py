@@ -19,10 +19,11 @@ async def reeldownload(request: Request):
     return templates.TemplateResponse("reeldown.html", {"request":request})
 
 @app.post("/submitform")
-async def handle_form(request: Request,url: str = Form(...)):
+async def handle_form(request: Request,url: str = Form(...),l_username: str = Form(...), l_password: str = Form(...)):
     l= url.split('/')
     short_id=l[-2]
     post = Post.from_shortcode(L.context, short_id)
+    L.login(l_username, l_password) 
     L.download_post(post,target=short_id)
     return templates.TemplateResponse("s.html", {"request":request})
 
@@ -31,7 +32,8 @@ async def dpdownload(request: Request):
     return templates.TemplateResponse("dpdownload.html", {"request":request})
 
 @app.post("/submitform1")
-async def handle_form1(request: Request, username: str = Form(...)):
+async def handle_form1(request: Request, username: str = Form(...),l_username: str = Form(...), l_password: str = Form(...)):
+    L.login(l_username, l_password) 
     L.download_profile(username, profile_pic_only=True)
     return templates.TemplateResponse("s.html", {"request":request})
 
