@@ -1,9 +1,9 @@
 from fastapi import FastAPI, Request, Form
 from instaloader import Instaloader, Post, Profile
-from instaloader.exceptions import TwoFactorAuthRequiredException
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
+from instagramy.plugins.download import *
 
 L = Instaloader()
 app = FastAPI()
@@ -24,10 +24,7 @@ async def handle_form(request: Request,url: str = Form(...),l_username: str = Fo
     l= url.split('/')
     short_id=l[-2]
     post = Post.from_shortcode(L.context, short_id)
-    try:
-        L.login(l_username, l_password) 
-    except TwoFactorAuthRequiredException:
-        L.two_factor_login(11111)
+    L.login(l_username, l_password) 
     L.download_post(post,target=short_id)
     return templates.TemplateResponse("s.html", {"request":request})
 
@@ -36,11 +33,7 @@ async def dpdownload(request: Request):
     return templates.TemplateResponse("dpdownload.html", {"request":request})
 
 @app.post("/submitform1")
-async def handle_form1(request: Request, username: str = Form(...),l_username: str = Form(...), l_password: str = Form(...)):
-    try:
-        L.login(l_username, l_password) 
-    except TwoFactorAuthRequiredException:
-        L.two_factor_login(11111)
-    L.download_profile(username, profile_pic_only=True)
+async def handle_form1(request: Request, u_name: str = Form(...)):
+    download_profile_pic(username=u_name)
     return templates.TemplateResponse("s.html", {"request":request})
 
