@@ -3,3 +3,4 @@ instaloader
 uvicorn 
 Jinja2
 python-multipart
+instagramy
